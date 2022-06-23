@@ -18,7 +18,9 @@ JAVA_SS=20m
 
 ########################################################################################################################
 
-TOMCAT_MAX_THREADS=200
+TOMCAT_MAX_THREADS=999
+TOMCAT_HTTP_HEADER_SIZE=65536
+TOMCAT_PACKET_SIZE=65536
 
 ########################################################################################################################
 
@@ -366,7 +368,7 @@ cat > ${AMI_HOME}/current/conf/server.xml << EOF
                protocol="org.apache.coyote.http11.Http11NioProtocol"
                connectionTimeout="20000"
                maxThreads="${TOMCAT_MAX_THREADS}"
-               packetSize="65536"
+               maxHttpHeaderSize="${TOMCAT_HTTP_HEADER_SIZE}"
                compression="on"
                SSLEnabled="true"
                scheme="https"
@@ -390,7 +392,7 @@ cat > ${AMI_HOME}/current/conf/server.xml << EOF
                protocol="HTTP/1.1"
                connectionTimeout="20000"
                maxThreads="${TOMCAT_MAX_THREADS}"
-               packetSize="65536" />
+               maxHttpHeaderSize="${TOMCAT_HTTP_HEADER_SIZE}" />
 
     <!--*************************************************************************************************************-->
 
@@ -403,7 +405,7 @@ cat > ${AMI_HOME}/current/conf/server.xml << EOF
                allowedRequestAttributesPattern=".*"  
                connectionTimeout="20000"
                maxThreads="${TOMCAT_MAX_THREADS}"
-               packetSize="65536" />
+               packetSize="${TOMCAT_PACKET_SIZE}" />
 
     <!--*************************************************************************************************************-->
 
