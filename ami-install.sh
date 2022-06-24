@@ -18,9 +18,8 @@ JAVA_SS=20m
 
 ########################################################################################################################
 
-TOMCAT_MAX_THREADS=999
+TOMCAT_MAX_THREADS=200
 TOMCAT_HTTP_HEADER_SIZE=65536
-TOMCAT_PACKET_SIZE=65536
 
 ########################################################################################################################
 
@@ -31,6 +30,7 @@ TOMCAT_HTTP_PORT=8080
 ########################################################################################################################
 
 TOMCAT_AJP_PORT=8009
+TOMCAT_AJP_PACKET_SIZE=65536
 TOMCAT_AJP_ADDRESS=$(curl -4 --silent icanhazip.com)
 TOMCAT_AJP_SECRET=NOCgJx8ITYdHzdKF6asyrIFqq7dCcqmx3DCLRKUneEl91Xl2flRSnjeBmArS9Sbz
 
@@ -365,7 +365,7 @@ cat > ${AMI_HOME}/current/conf/server.xml << EOF
     <!--*************************************************************************************************************-->
 
     <Connector port="${TOMCAT_HTTPS_PORT}"
-               protocol="org.apache.coyote.http11.Http11NioProtocol"
+               protocol="org.apache.coyote.http11.Http11Nio2Protocol"
                connectionTimeout="20000"
                maxThreads="${TOMCAT_MAX_THREADS}"
                maxHttpHeaderSize="${TOMCAT_HTTP_HEADER_SIZE}"
@@ -374,7 +374,7 @@ cat > ${AMI_HOME}/current/conf/server.xml << EOF
                scheme="https"
                secure="true">
 
-        <SSLHostConfig certificateVerification="want"
+        <SSLHostConfig certificateVerification="optional"
                        truststoreFile="\${catalina.home}/conf/_star_.in2p3.fr.jks"
                        truststorePassword="changeit">
 
@@ -389,7 +389,7 @@ cat > ${AMI_HOME}/current/conf/server.xml << EOF
 
     <Connector port="${TOMCAT_HTTP_PORT}"
                redirectPort="${TOMCAT_HTTPS_PORT}"
-               protocol="HTTP/1.1"
+               protocol="org.apache.coyote.http11.Http11Nio2Protocol"
                connectionTimeout="20000"
                maxThreads="${TOMCAT_MAX_THREADS}"
                maxHttpHeaderSize="${TOMCAT_HTTP_HEADER_SIZE}" />
@@ -398,14 +398,14 @@ cat > ${AMI_HOME}/current/conf/server.xml << EOF
 
     <Connector port="${TOMCAT_AJP_PORT}"
                redirectPort="${TOMCAT_HTTPS_PORT}"
-               protocol="AJP/1.3"
+               protocol="org.apache.coyote.ajp.AjpNio2Protocol"
+               connectionTimeout="20000"
+               maxThreads="${TOMCAT_MAX_THREADS}"
+               packetSize="${TOMCAT_AJP_PACKET_SIZE}"
                address="${TOMCAT_AJP_ADDRESS}"
                secret="${TOMCAT_AJP_SECRET}"
                secretRequired="true"
-               allowedRequestAttributesPattern=".*"  
-               connectionTimeout="20000"
-               maxThreads="${TOMCAT_MAX_THREADS}"
-               packetSize="${TOMCAT_PACKET_SIZE}" />
+               allowedRequestAttributesPattern=".*" />
 
     <!--*************************************************************************************************************-->
 
