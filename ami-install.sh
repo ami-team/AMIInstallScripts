@@ -213,10 +213,10 @@ function _err()
 _box "Downloading JDK"
 
 (
-  mkdir -p $JAVA_HOME
-  cd $JAVA_HOME
+  mkdir -p ${JAVA_HOME}
+  cd ${JAVA_HOME}
 
-  curl -L $JDK_URL > jdk.tar.gz
+  curl -L ${JDK_URL} > jdk.tar.gz
 
   if [[ $? -ne 0 ]]
   then
@@ -225,11 +225,16 @@ _box "Downloading JDK"
 
   DEST=$(tar tzf jdk.tar.gz | grep 'javac' | python3 -c "import os.path ; print(os.path.dirname(os.path.dirname(os.path.normpath(input()))))")
 
-  rm -fr $DEST
+  if [[ -z "${DEST}" ]]
+  then
+    _err
+  fi
+
+  rm -fr ${DEST}
   tar xzf jdk.tar.gz
 
   rm -fr current
-  ln -s $DEST current
+  ln -s ${DEST} current
 
   rm jdk.tar.gz
 
@@ -246,7 +251,7 @@ _box "Downloading Tomcat"
   mkdir -p ${AMI_HOME}
   cd ${AMI_HOME}
 
-  curl -L $TOMCAT_URL > tomcat.tar.gz
+  curl -L ${TOMCAT_URL} > tomcat.tar.gz
 
   if [[ $? -ne 0 ]]
   then
@@ -255,11 +260,16 @@ _box "Downloading Tomcat"
 
   DEST=$(tar tzf tomcat.tar.gz | grep 'catalina.sh' | python3 -c "import os.path ; print(os.path.dirname(os.path.dirname(os.path.normpath(input()))))")
 
-  rm -fr $DEST
+  if [[ -z "${DEST}" ]]
+  then
+    _err
+  fi
+
+  rm -fr ${DEST}
   tar xzf tomcat.tar.gz
 
   rm -fr current
-  ln -s $DEST current
+  ln -s ${DEST} current
 
   rm tomcat.tar.gz
 
